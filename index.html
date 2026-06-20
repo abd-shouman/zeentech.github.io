@@ -1,508 +1,409 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="original">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Command Reference</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<title>ZeenTech — Something is coming.</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f7f6f3;
-    --bg-tertiary: #f0efe9;
-    --text-primary: #1a1a18;
-    --text-secondary: #6b6a65;
-    --text-tertiary: #9b9a95;
-    --border-light: rgba(0,0,0,0.1);
-    --border-mid: rgba(0,0,0,0.18);
-    --border-strong: rgba(0,0,0,0.28);
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --chat-bg: #E6F1FB; --chat-bg-d: #0C447C; --chat-color: #185FA5; --chat-text: #042C53;
-    --cowork-bg: #EEEDFE; --cowork-bg-d: #3C3489; --cowork-color: #534AB7; --cowork-text: #26215C;
-    --code-bg: #E1F5EE; --code-bg-d: #085041; --code-color: #0F6E56; --code-text: #04342C;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-primary: #1e1e1c;
-      --bg-secondary: #252523;
-      --bg-tertiary: #2c2c2a;
-      --text-primary: #f0efe9;
-      --text-secondary: #a0a09a;
-      --text-tertiary: #6b6a65;
-      --border-light: rgba(255,255,255,0.08);
-      --border-mid: rgba(255,255,255,0.14);
-      --border-strong: rgba(255,255,255,0.22);
-      --chat-bg: #0C447C; --chat-color: #85B7EB; --chat-text: #B5D4F4;
-      --cowork-bg: #3C3489; --cowork-color: #AFA9EC; --cowork-text: #CECBF6;
-      --code-bg: #085041; --code-color: #5DCAA5; --code-text: #9FE1CB;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 2rem 1.5rem 4rem;
-  }
-  .page-header { max-width: 860px; margin: 0 auto 2.5rem; }
-  .page-title { font-size: 26px; font-weight: 500; margin-bottom: 6px; }
-  .page-sub { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
-  .breadcrumb { font-size: 13px; color: var(--text-tertiary); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; min-height: 20px; }
-  .breadcrumb span { color: var(--text-secondary); }
-  .breadcrumb .sep { color: var(--text-tertiary); }
-  .breadcrumb .active { color: var(--text-primary); font-weight: 500; }
+*{box-sizing:border-box;margin:0;padding:0;}
 
-  /* Layer 1 */
-  .l1-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 860px; margin: 0 auto 2rem; }
-  .l1-card {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border-light);
-    border-radius: var(--radius-xl);
-    padding: 1.75rem 1.5rem;
-    cursor: pointer;
-    transition: border-color 0.15s, transform 0.12s;
-    position: relative;
-    overflow: hidden;
-  }
-  .l1-card:hover { border-color: var(--border-mid); transform: translateY(-2px); }
-  .l1-card.selected { border: 2px solid var(--border-strong); }
-  .l1-icon {
-    width: 48px; height: 48px; border-radius: var(--radius-lg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; margin-bottom: 1rem;
-  }
-  .l1-name { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
-  .l1-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem; }
-  .l1-count {
-    display: inline-block; font-size: 12px; padding: 3px 10px;
-    border-radius: 99px; font-weight: 500;
-  }
-  .l1-arrow {
-    position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%);
-    font-size: 18px; color: var(--text-tertiary); transition: color 0.15s, right 0.15s;
-  }
-  .l1-card:hover .l1-arrow { color: var(--text-secondary); right: 1rem; }
-  .l1-card.selected .l1-arrow { color: var(--text-primary); }
+/* ════════════════════════════════════════════
+   COLOR SCHEMES  (switch via html[data-theme])
+   ════════════════════════════════════════════ */
 
-  /* Layer 2 */
-  .l2-section { max-width: 860px; margin: 0 auto 1rem; display: none; }
-  .l2-section.show { display: block; }
-  .l2-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
-  .l2-title { font-size: 16px; font-weight: 500; }
-  .l2-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; }
-  .l2-card {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.1rem;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .l2-card:hover { border-color: var(--border-mid); }
-  .l2-card.selected { border: 1.5px solid var(--border-strong); }
-  .l2-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .l2-icon {
-    width: 30px; height: 30px; border-radius: var(--radius-md);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0;
-  }
-  .l2-cmd { font-size: 11px; font-family: monospace; color: var(--text-secondary); }
-  .l2-label { font-size: 14px; font-weight: 500; }
-  .l2-brief { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+/* ── ORIGINAL — Desert Monastery (default) ── */
+html[data-theme="original"]{
+  --bg:#080604; --bg2:#0F0A04;
+  --surface:rgba(14,10,4,.92); --card:rgba(26,18,6,.80);
+  --border:#3A2810; --border2:#5A3E18;
+  --glow:#E07B00; --glow2:#F5A020; --glow-dim:#8B4A00;
+  --gold:#C9A84C; --sand:#C4B48C; --sand-dim:#7A6A4C;
+  --glow-shadow:0 0 18px #E07B00, 0 0 40px rgba(224,123,0,.3);
+  --node-shadow:0 0 14px rgba(201,168,76,.6); --node-shadow2:0 0 28px rgba(201,168,76,.9);
+  --scan:rgba(0,0,0,.07);
+  --sky:transparent;
+  --cloud:rgba(196,180,140,.18); --cloud-edge:rgba(196,180,140,.30);
+  --palm-trunk:#5A3E18; --palm-frond:#3A7A4A;
+  --cactus:#3A7A4A; --cactus-dim:#2A5A36;
+  --camel:#C9A84C; --camel-dim:#8B6A2C;
+  --ground:#1A1206; --ground2:#241808; --ground-edge:#3A2810;
+  --swatch:#E07B00;
+}
 
-  /* Layer 3 */
-  .l3-section { max-width: 860px; margin: 0 auto; display: none; }
-  .l3-section.show { display: block; }
-  .l3-card {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border-light);
-    border-radius: var(--radius-xl);
-    padding: 1.75rem 2rem;
-    animation: slideIn 0.18s ease;
-  }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .l3-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.25rem; }
-  .l3-icon {
-    width: 52px; height: 52px; border-radius: var(--radius-lg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; flex-shrink: 0;
-  }
-  .l3-meta { flex: 1; }
-  .l3-cmd { font-family: monospace; font-size: 13px; color: var(--text-secondary); margin-bottom: 3px; }
-  .l3-title { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
-  .l3-cat-badge { font-size: 12px; padding: 3px 10px; border-radius: 99px; display: inline-block; }
-  .l3-divider { height: 0.5px; background: var(--border-light); margin: 1.25rem 0; }
-  .l3-section-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: 8px; }
-  .l3-body { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
-  .l3-usecase-box {
-    background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  .l3-usecase-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
-  .l3-trigger-box {
-    background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-  }
-  .l3-trigger-text { font-size: 13px; font-family: monospace; color: var(--text-primary); line-height: 1.7; }
-  .close-btn {
-    margin-top: 1.5rem;
-    padding: 7px 18px;
-    border: 0.5px solid var(--border-mid);
-    border-radius: var(--radius-md);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .close-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+/* ── ORIGINAL GREEN — lightened earth-green ── */
+html[data-theme="original-green"]{
+  --bg:#141A0E; --bg2:#1C240F;
+  --surface:rgba(28,36,15,.92); --card:rgba(36,46,18,.80);
+  --border:#2A3818; --border2:#4A5E28;
+  --glow:#8BB836; --glow2:#A8D44E; --glow-dim:#4A6A1C;
+  --gold:#D8B85C; --sand:#CAC8A2; --sand-dim:#8A8A5C;
+  --glow-shadow:0 0 18px #8BB836, 0 0 40px rgba(139,184,54,.3);
+  --node-shadow:0 0 14px rgba(216,184,92,.6); --node-shadow2:0 0 28px rgba(216,184,92,.9);
+  --scan:rgba(0,0,0,.05);
+  --sky:transparent;
+  --cloud:rgba(202,200,162,.18); --cloud-edge:rgba(202,200,162,.32);
+  --palm-trunk:#5A4E28; --palm-frond:#8BB836;
+  --cactus:#7AA82C; --cactus-dim:#5A7E1C;
+  --camel:#D8B85C; --camel-dim:#9A8240;
+  --ground:#1A2410; --ground2:#243012; --ground-edge:#3A4A1C;
+  --swatch:#8BB836;
+}
 
-  @media (max-width: 600px) {
-    .l1-grid { grid-template-columns: 1fr; }
-    .l1-arrow { display: none; }
-  }
+/* ── DESERT WARMTH — chocolate + sand gold (light) ── */
+html[data-theme="desert-warmth"]{
+  --bg:#FDF8F2; --bg2:#F5EBDD;
+  --surface:rgba(255,255,255,.75); --card:rgba(255,255,255,.65);
+  --border:#D8C4A8; --border2:#B89668;
+  --glow:#A8651F; --glow2:#C9802E; --glow-dim:#8B5E3C;
+  --gold:#A87A1E; --sand:#4E342E; --sand-dim:#8B6B4C;
+  --glow-shadow:none;
+  --node-shadow:0 0 10px rgba(168,122,30,.4); --node-shadow2:0 0 18px rgba(168,122,30,.6);
+  --scan:rgba(120,90,50,.035);
+  --sky:transparent;
+  --cloud:rgba(255,255,255,.9); --cloud-edge:rgba(184,150,104,.55);
+  --palm-trunk:#8B5E3C; --palm-frond:#6B8E4E;
+  --cactus:#7A9B54; --cactus-dim:#5E7E3C;
+  --camel:#A87545; --camel-dim:#7A4F2C;
+  --ground:#EADAC0; --ground2:#DBC8A4; --ground-edge:#C4A878;
+  --swatch:#8B5E3C;
+}
+
+/* ── CLOUD NEUTRAL — Pantone 2026 warm off-white (light) ── */
+html[data-theme="cloud-neutral"]{
+  --bg:#F0EEE9; --bg2:#E7E4DD;
+  --surface:rgba(255,255,255,.78); --card:rgba(255,255,255,.68);
+  --border:#D5D2CA; --border2:#B8B4AA;
+  --glow:#3D3D3D; --glow2:#5A5A5A; --glow-dim:#8A8A8A;
+  --gold:#1E4CA1; --sand:#1A1A1A; --sand-dim:#6B6B6B;
+  --glow-shadow:none;
+  --node-shadow:0 0 10px rgba(30,76,161,.35); --node-shadow2:0 0 18px rgba(30,76,161,.5);
+  --scan:rgba(60,60,60,.03);
+  --sky:transparent;
+  --cloud:rgba(255,255,255,.95); --cloud-edge:rgba(184,180,170,.6);
+  --palm-trunk:#9A8E7A; --palm-frond:#7A8B6E;
+  --cactus:#8A9B7E; --cactus-dim:#6E7E62;
+  --camel:#A8A296; --camel-dim:#7E786C;
+  --ground:#E4E1D9; --ground2:#D6D2C8; --ground-edge:#C2BEB2;
+  --swatch:#1E4CA1;
+}
+
+/* ── QATAR — GCO maroon + gold (light) ── */
+html[data-theme="qatar"]{
+  --bg:#F4F1EC; --bg2:#EAE5DD;
+  --surface:rgba(255,255,255,.78); --card:rgba(255,255,255,.68);
+  --border:#E2CDD4; --border2:#C9A0AC;
+  --glow:#8A1538; --glow2:#A8244A; --glow-dim:#6E1029;
+  --gold:#A87A1E; --sand:#2A0A12; --sand-dim:#8A5560;
+  --glow-shadow:none;
+  --node-shadow:0 0 10px rgba(138,21,56,.35); --node-shadow2:0 0 18px rgba(138,21,56,.5);
+  --scan:rgba(120,30,60,.03);
+  --sky:transparent;
+  --cloud:rgba(255,255,255,.95); --cloud-edge:rgba(201,160,172,.55);
+  --palm-trunk:#8B5E3C; --palm-frond:#6B8E4E;
+  --cactus:#7A9B54; --cactus-dim:#5E7E3C;
+  --camel:#B58A3A; --camel-dim:#8A6420;
+  --ground:#EADAC0; --ground2:#DBC8A4; --ground-edge:#C9A8B0;
+  --swatch:#8A1538;
+}
+
+/* ════════════════════════════════════════════ */
+
+html,body{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--sand);
+  font-family:'Share Tech Mono',monospace;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; overflow:hidden;
+  transition:background .4s ease, color .4s ease;
+}
+
+/* scanline overlay */
+body::before{
+  content:''; position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scan) 2px,var(--scan) 4px);
+  pointer-events:none; z-index:9999;
+}
+
+/* ambient glow behind content */
+.ambient{
+  position:fixed; top:46%; left:50%; transform:translate(-50%,-50%);
+  width:600px; height:600px;
+  background:radial-gradient(ellipse at center, var(--glow) 0%, transparent 70%);
+  opacity:.08; pointer-events:none; z-index:0;
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.06;}50%{opacity:.12;}}
+
+/* ── THEME SWITCHER (top-left) ── */
+.switcher{
+  position:fixed; top:16px; left:16px; z-index:200;
+  background:var(--surface); border:2px solid var(--border2);
+  padding:10px 12px;
+}
+.switcher-label{
+  font-family:'Press Start 2P',monospace; font-size:6px;
+  color:var(--sand-dim); letter-spacing:.12em; margin-bottom:9px;
+}
+.swatches{display:flex; gap:7px;}
+.swatch{
+  width:18px; height:18px; cursor:pointer; padding:0;
+  border:2px solid var(--border2); background:var(--sw);
+  transition:transform .12s, box-shadow .12s;
+}
+.swatch:hover{transform:translateY(-2px);}
+.swatch.active{
+  border-color:var(--glow);
+  box-shadow:0 0 0 2px var(--bg), 0 0 10px var(--glow);
+}
+.switcher-name{
+  font-family:'Press Start 2P',monospace; font-size:6px;
+  color:var(--glow); letter-spacing:.08em; margin-top:9px; min-height:8px;
+}
+
+/* ── Hero content ── */
+.wrap{
+  position:relative; z-index:5; text-align:center;
+  padding:40px 32px; max-width:640px; width:100%;
+}
+.brand{
+  font-family:'Press Start 2P',monospace; font-size:22px;
+  color:var(--glow); text-shadow:var(--glow-shadow);
+  letter-spacing:.08em; margin-bottom:8px;
+}
+.brand span{color:var(--gold);}
+.tagline-small{
+  font-family:'Press Start 2P',monospace; font-size:8px;
+  color:var(--sand-dim); letter-spacing:.2em; margin-bottom:52px;
+}
+.lamp{margin:0 auto 44px; width:64px; display:block; animation:lamp-glow 3s ease-in-out infinite;}
+@keyframes lamp-glow{0%,100%{filter:drop-shadow(0 0 6px var(--glow));}50%{filter:drop-shadow(0 0 22px var(--glow2));}}
+.headline{
+  font-family:'Press Start 2P',monospace; font-size:13px;
+  color:var(--glow2); line-height:2; margin-bottom:24px; text-shadow:var(--glow-shadow);
+}
+.subline{
+  font-size:14px; color:var(--sand-dim); line-height:1.85;
+  margin:0 auto 52px; max-width:480px;
+}
+.subline em{color:var(--gold); font-style:normal;}
+
+/* journey path */
+.path{display:flex; align-items:center; justify-content:center; margin-bottom:56px;}
+.path-node{display:flex; flex-direction:column; align-items:center; gap:8px;}
+.node-dot{width:14px; height:14px; border:3px solid var(--border2); background:var(--card);}
+.node-dot.guru{border-color:var(--gold); box-shadow:var(--node-shadow); animation:guru-pulse 2.5s ease-in-out infinite;}
+@keyframes guru-pulse{0%,100%{box-shadow:var(--node-shadow);}50%{box-shadow:var(--node-shadow2);}}
+.node-label{font-family:'Press Start 2P',monospace; font-size:6px; color:var(--sand-dim); letter-spacing:.05em;}
+.node-label.guru{color:var(--gold);}
+.path-line{width:48px; height:3px; margin-bottom:20px;
+  background:repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 6px, transparent 6px, transparent 12px);}
+
+.status-bar{
+  font-family:'Press Start 2P',monospace; font-size:8px; color:var(--glow-dim);
+  letter-spacing:.1em; padding:14px 24px; border:2px solid var(--border);
+  background:var(--surface); display:inline-block; margin-bottom:18px;
+}
+.status-bar .dot{
+  display:inline-block; width:6px; height:6px; background:var(--glow);
+  margin-right:10px; vertical-align:middle; position:relative; top:-1px;
+  animation:blink 1.2s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.hint{font-size:11px; color:var(--sand-dim); opacity:.6; letter-spacing:.05em; margin-top:26px;}
+
+/* ── DESERT SCENE (pixel decorations, bottom) ── */
+.scene{position:fixed; left:0; right:0; bottom:0; height:230px; z-index:1; pointer-events:none; overflow:hidden;}
+.scene svg{image-rendering:pixelated; position:absolute;}
+.dunes{left:0; bottom:0; width:100%; height:130px;}
+.dunes .d-back{fill:var(--ground2);}
+.dunes .d-front{fill:var(--ground);}
+.dunes .d-edge{fill:var(--ground-edge);}
+
+.sprite{position:absolute;}
+.s-trunk{fill:var(--palm-trunk);}
+.s-frond{fill:var(--palm-frond);}
+.s-cactus{fill:var(--cactus);}
+.s-cactus-d{fill:var(--cactus-dim);}
+.s-camel{fill:var(--camel);}
+.s-camel-d{fill:var(--camel-dim);}
+
+.palm-left{left:4%; bottom:78px; width:78px;}
+.palm-right{right:6%; bottom:84px; width:64px;}
+.cactus-1{left:24%; bottom:70px; width:34px;}
+.camel-1{right:24%; bottom:72px; width:96px; animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+
+/* Mario clouds */
+.cloud{position:fixed; z-index:1; pointer-events:none;}
+.cloud .c-body{fill:var(--cloud);}
+.cloud .c-edge{fill:var(--cloud-edge);}
+.cloud-1{top:12%; width:110px; animation:drift1 38s linear infinite;}
+.cloud-2{top:24%; width:78px; animation:drift2 52s linear infinite;}
+.cloud-3{top:8%; width:64px; animation:drift1 64s linear infinite; animation-delay:-20s;}
+@keyframes drift1{from{left:-160px;}to{left:110%;}}
+@keyframes drift2{from{left:110%;}to{left:-160px;}}
+
+@media(max-width:520px){
+  .brand{font-size:14px;} .headline{font-size:10px;} .path-line{width:26px;}
+  .palm-left,.palm-right{width:50px;} .camel-1{width:70px;} .scene{height:170px;}
+  .switcher{padding:8px 9px;}
+}
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <div class="breadcrumb" id="breadcrumb">
-    <span>Claude</span>
-  </div>
-  <h1 class="page-title">Claude command reference</h1>
-  <p class="page-sub">Three layers of commands — choose a surface, then a command, to see what it does and how to invoke it.</p>
+<div class="ambient"></div>
+
+<!-- ── Mario clouds ── -->
+<svg class="cloud cloud-1" viewBox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
+  <rect class="c-edge" x="16" y="6" width="32" height="20"/><rect class="c-edge" x="8" y="12" width="48" height="14"/>
+  <rect class="c-body" x="18" y="8" width="28" height="16"/><rect class="c-body" x="10" y="14" width="44" height="10"/>
+  <rect class="c-body" x="24" y="4" width="14" height="6"/>
+</svg>
+<svg class="cloud cloud-2" viewBox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
+  <rect class="c-edge" x="16" y="6" width="32" height="20"/><rect class="c-edge" x="8" y="12" width="48" height="14"/>
+  <rect class="c-body" x="18" y="8" width="28" height="16"/><rect class="c-body" x="10" y="14" width="44" height="10"/>
+  <rect class="c-body" x="24" y="4" width="14" height="6"/>
+</svg>
+<svg class="cloud cloud-3" viewBox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
+  <rect class="c-edge" x="16" y="6" width="32" height="20"/><rect class="c-edge" x="8" y="12" width="48" height="14"/>
+  <rect class="c-body" x="18" y="8" width="28" height="16"/><rect class="c-body" x="10" y="14" width="44" height="10"/>
+  <rect class="c-body" x="24" y="4" width="14" height="6"/>
+</svg>
+
+<!-- ── Desert scene ── -->
+<div class="scene">
+
+  <!-- palm left -->
+  <svg class="sprite palm-left" viewBox="0 0 32 44" xmlns="http://www.w3.org/2000/svg">
+    <rect class="s-frond" x="14" y="4" width="4" height="4"/>
+    <rect class="s-frond" x="6" y="6" width="8" height="3"/><rect class="s-frond" x="0" y="8" width="8" height="3"/>
+    <rect class="s-frond" x="18" y="6" width="8" height="3"/><rect class="s-frond" x="24" y="8" width="8" height="3"/>
+    <rect class="s-frond" x="10" y="2" width="3" height="5"/><rect class="s-frond" x="19" y="2" width="3" height="5"/>
+    <rect class="s-frond" x="4" y="11" width="10" height="3"/><rect class="s-frond" x="18" y="11" width="10" height="3"/>
+    <rect class="s-trunk" x="14" y="10" width="4" height="34"/>
+    <rect class="s-trunk" x="13" y="18" width="6" height="3"/><rect class="s-trunk" x="13" y="28" width="6" height="3"/>
+  </svg>
+
+  <!-- cactus -->
+  <svg class="sprite cactus-1" viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">
+    <rect class="s-cactus" x="8" y="4" width="4" height="24"/>
+    <rect class="s-cactus" x="2" y="12" width="3" height="8"/><rect class="s-cactus" x="2" y="10" width="3" height="3"/><rect class="s-cactus" x="5" y="14" width="3" height="3"/>
+    <rect class="s-cactus" x="15" y="9" width="3" height="9"/><rect class="s-cactus" x="15" y="7" width="3" height="3"/><rect class="s-cactus" x="12" y="11" width="3" height="3"/>
+    <rect class="s-cactus-d" x="8" y="4" width="2" height="24"/>
+  </svg>
+
+  <!-- palm right -->
+  <svg class="sprite palm-right" viewBox="0 0 32 44" xmlns="http://www.w3.org/2000/svg">
+    <rect class="s-frond" x="14" y="4" width="4" height="4"/>
+    <rect class="s-frond" x="6" y="6" width="8" height="3"/><rect class="s-frond" x="0" y="8" width="8" height="3"/>
+    <rect class="s-frond" x="18" y="6" width="8" height="3"/><rect class="s-frond" x="24" y="8" width="8" height="3"/>
+    <rect class="s-frond" x="10" y="2" width="3" height="5"/><rect class="s-frond" x="19" y="2" width="3" height="5"/>
+    <rect class="s-frond" x="4" y="11" width="10" height="3"/><rect class="s-frond" x="18" y="11" width="10" height="3"/>
+    <rect class="s-trunk" x="14" y="10" width="4" height="34"/>
+    <rect class="s-trunk" x="13" y="18" width="6" height="3"/><rect class="s-trunk" x="13" y="28" width="6" height="3"/>
+  </svg>
+
+  <!-- camel -->
+  <svg class="sprite camel-1" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg">
+    <rect class="s-camel" x="10" y="14" width="26" height="8"/>
+    <rect class="s-camel" x="12" y="8" width="7" height="7"/><rect class="s-camel" x="24" y="9" width="7" height="6"/>
+    <rect class="s-camel" x="34" y="6" width="4" height="12"/><rect class="s-camel" x="36" y="4" width="6" height="4"/><rect class="s-camel" x="40" y="6" width="3" height="3"/>
+    <rect class="s-camel" x="12" y="22" width="4" height="9"/><rect class="s-camel" x="18" y="22" width="4" height="9"/>
+    <rect class="s-camel" x="26" y="22" width="4" height="9"/><rect class="s-camel" x="32" y="22" width="4" height="9"/>
+    <rect class="s-camel-d" x="10" y="20" width="26" height="2"/>
+    <rect class="s-camel" x="8" y="16" width="3" height="3"/>
+  </svg>
+
+  <!-- dunes -->
+  <svg class="dunes" viewBox="0 0 1200 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="d-back" d="M0 60 Q200 30 420 55 T840 50 T1200 58 V130 H0 Z"/>
+    <path class="d-front" d="M0 88 Q260 58 520 82 T1040 78 T1200 86 V130 H0 Z"/>
+    <path class="d-edge" d="M0 88 Q260 58 520 82 T1040 78 T1200 86 V92 Q1040 84 520 88 T0 94 Z"/>
+  </svg>
 </div>
 
-<!-- Layer 1 -->
-<div class="l1-grid" id="l1-grid">
-  <div class="l1-card" onclick="selectMode('chat')" id="l1-chat">
-    <div class="l1-icon" style="background:var(--chat-bg);color:var(--chat-color)"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
-    <div class="l1-name">Chat</div>
-    <div class="l1-desc">Document and file skills you can invoke in any Claude conversation.</div>
-    <div class="l1-count" style="background:var(--chat-bg);color:var(--chat-text)">5 commands</div>
-    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
-  </div>
-  <div class="l1-card" onclick="selectMode('cowork')" id="l1-cowork">
-    <div class="l1-icon" style="background:var(--cowork-bg);color:var(--cowork-color)"><i class="ti ti-users" aria-hidden="true"></i></div>
-    <div class="l1-name">Cowork</div>
-    <div class="l1-desc">Setup, automation, and configuration skills for your Claude environment.</div>
-    <div class="l1-count" style="background:var(--cowork-bg);color:var(--cowork-text)">9 commands</div>
-    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
-  </div>
-  <div class="l1-card" onclick="selectMode('code')" id="l1-code">
-    <div class="l1-icon" style="background:var(--code-bg);color:var(--code-color)"><i class="ti ti-terminal-2" aria-hidden="true"></i></div>
-    <div class="l1-name">Code</div>
-    <div class="l1-desc">Engineering skills for reviewing, running, and hardening your codebase.</div>
-    <div class="l1-count" style="background:var(--code-bg);color:var(--code-text)">7 commands</div>
-    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
-  </div>
+<!-- ── Theme switcher ── -->
+<div class="switcher">
+  <div class="switcher-label">▸ THEME</div>
+  <div class="swatches" id="swatches"></div>
+  <div class="switcher-name" id="themeName">ORIGINAL</div>
 </div>
 
-<!-- Layer 2 -->
-<div class="l2-section" id="l2-section">
-  <div class="l2-header">
-    <i class="ti ti-arrow-down" style="font-size:16px;color:var(--text-tertiary)" aria-hidden="true"></i>
-    <span class="l2-title" id="l2-title"></span>
-  </div>
-  <div class="l2-grid" id="l2-grid"></div>
-</div>
+<!-- ── Hero ── -->
+<div class="wrap">
+  <div class="brand">Zeen<span>Tech</span></div>
+  <div class="tagline-small">▸ QATAR'S AI MASTERY PLATFORM</div>
 
-<!-- Layer 3 -->
-<div class="l3-section" id="l3-section">
-  <div class="l2-header" style="margin-top:1.5rem">
-    <i class="ti ti-arrow-down" style="font-size:16px;color:var(--text-tertiary)" aria-hidden="true"></i>
-    <span class="l2-title">Command detail</span>
+  <svg class="lamp" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="32" cy="54" rx="18" ry="4" fill="var(--glow)" opacity=".15"/>
+    <path d="M20 38 Q16 28 20 20 Q26 10 32 10 Q38 10 44 20 Q48 28 44 38 Z" fill="var(--card)" stroke="var(--glow)" stroke-width="2"/>
+    <path d="M24 38 L40 38 L38 46 Q36 52 32 52 Q28 52 26 46 Z" fill="var(--card)" stroke="var(--gold)" stroke-width="1.5"/>
+    <ellipse cx="32" cy="38" rx="8" ry="2.5" fill="var(--glow)" opacity=".6"/>
+    <path d="M32 10 Q34 4 32 0 Q30 4 32 10" fill="var(--glow2)" opacity=".8"/>
+    <circle cx="32" cy="26" r="5" fill="var(--glow)" opacity=".22"/>
+    <circle cx="32" cy="26" r="2" fill="var(--glow2)" opacity=".5"/>
+  </svg>
+
+  <div class="headline">YOUR OWN GUNI IS ALMOST HERE.</div>
+  <p class="subline">
+    AI mastery — not for machine people, but for <em>business people</em>.<br>
+    Four stages. One journey. Infinite leverage.
+  </p>
+
+  <div class="path">
+    <div class="path-node"><div class="node-dot"></div><div class="node-label">SEEKER</div></div>
+    <div class="path-line"></div>
+    <div class="path-node"><div class="node-dot"></div><div class="node-label">APPRENTICE</div></div>
+    <div class="path-line"></div>
+    <div class="path-node"><div class="node-dot"></div><div class="node-label">MASTER</div></div>
+    <div class="path-line"></div>
+    <div class="path-node"><div class="node-dot guru"></div><div class="node-label guru">GURU</div></div>
   </div>
-  <div class="l3-card" id="l3-card"></div>
+
+  <div class="status-bar"><span class="dot"></span>LOADING THE PATH&hellip;</div>
+  <div class="hint">zeentech.qa</div>
 </div>
 
 <script>
-const data = {
-  chat: {
-    label: 'Chat commands',
-    iconClass: 'ti-message-circle',
-    bgVar: 'var(--chat-bg)', colorVar: 'var(--chat-color)', textVar: 'var(--chat-text)',
-    commands: [
-      {
-        cmd: '/pdf', label: 'PDF', icon: 'ti-file-type-pdf',
-        brief: 'Read, merge, split, and create PDF files',
-        desc: 'Handles anything PDF — extract text, combine multiple files into one, split pages apart, add watermarks, fill forms, rotate pages, and OCR scanned documents to make them searchable.',
-        usecase: 'You have a scanned 40-page contract and need the text extracted so you can search and quote from it.',
-        trigger: '/pdf\n"merge these three PDFs into one"\n"extract the table from page 5"\n"make this scanned PDF searchable"'
-      },
-      {
-        cmd: '/docx', label: 'Word doc', icon: 'ti-file-word',
-        brief: 'Create and edit Word documents with rich formatting',
-        desc: 'Generates and edits .docx files with headings, tables of contents, page numbers, letterheads, tracked changes, and comments. Also extracts or reorganizes content from existing Word files.',
-        usecase: 'You need a polished memo with a table of contents and consistent heading styles delivered as a .docx.',
-        trigger: '/docx\n"write a client proposal as a Word doc"\n"add a table of contents to this document"\n"extract all the tables from this .docx"'
-      },
-      {
-        cmd: '/pptx', label: 'Slides', icon: 'ti-presentation',
-        brief: 'Build, edit, and parse PowerPoint presentations',
-        desc: 'Creates slide decks from scratch, reads and parses existing .pptx files, edits layouts and speaker notes, combines or splits presentations, and works with templates.',
-        usecase: 'Turn a bullet-point outline into a 12-slide deck with consistent layout and speaker notes.',
-        trigger: '/pptx\n"create a 10-slide pitch deck from this brief"\n"extract all the text from this presentation"\n"add speaker notes to every slide"'
-      },
-      {
-        cmd: '/xlsx', label: 'Spreadsheet', icon: 'ti-table',
-        brief: 'Create and manipulate Excel spreadsheets',
-        desc: 'Builds and edits .xlsx files — formulas, pivot tables, charts, conditional formatting, data validation, and multi-sheet workbooks. Also reads and transforms data from existing spreadsheets.',
-        usecase: 'Generate a project budget tracker with formulas, colour-coded status columns, and a summary pivot table.',
-        trigger: '/xlsx\n"build a budget tracker spreadsheet"\n"add a pivot table to this data"\n"read the values from column C"'
-      },
-      {
-        cmd: '/claude-api', label: 'Claude API', icon: 'ti-api',
-        brief: 'Up-to-date reference for the Anthropic API and SDK',
-        desc: 'Authoritative reference for model IDs, pricing, parameters, streaming, tool use, MCP, multi-agent patterns, prompt caching, and token counting. Always fetches live data — never answers from stale training memory.',
-        usecase: 'You are choosing between Sonnet and Haiku for a high-volume use case and need current pricing and context window specs.',
-        trigger: '/claude-api\n"what is the context window for claude-sonnet-4-6?"\n"how do I stream tool use responses?"\n"show me a multi-agent example with MCP"'
-      }
-    ]
-  },
-  cowork: {
-    label: 'Cowork commands',
-    iconClass: 'ti-users',
-    bgVar: 'var(--cowork-bg)', colorVar: 'var(--cowork-color)', textVar: 'var(--cowork-text)',
-    commands: [
-      {
-        cmd: '/setup-cowork', label: 'Setup Cowork', icon: 'ti-plug',
-        brief: 'Guided setup for plugins, tools, and first skill',
-        desc: 'Walks you through the Cowork onboarding flow — installs role-matched plugins, connects your tools (calendar, Slack, email), and helps you try your first skill. Best starting point for a new environment.',
-        usecase: 'You just installed Claude Code and want to connect your work tools in one guided session.',
-        trigger: '/setup-cowork'
-      },
-      {
-        cmd: '/skill-creator', label: 'Skill creator', icon: 'ti-wand',
-        brief: 'Create, edit, test, and benchmark custom skills',
-        desc: 'Builds new skills from scratch, modifies existing ones, runs evals to test correctness, benchmarks performance with variance analysis, and optimizes skill descriptions so they trigger reliably.',
-        usecase: 'You want a /daily-standup skill that drafts your standup message from your git commits.',
-        trigger: '/skill-creator\n"create a skill that summarizes my git log as a standup"\n"improve the trigger description for my existing skill"\n"run evals on /my-skill"'
-      },
-      {
-        cmd: '/schedule', label: 'Schedule', icon: 'ti-calendar-event',
-        brief: 'Create and manage scheduled cloud agents',
-        desc: 'Schedules recurring cloud agents on a cron expression or natural language interval. Also handles one-time future runs. You can list, update, and delete scheduled routines.',
-        usecase: 'Run a PR digest every weekday at 8am and send a summary to Slack.',
-        trigger: '/schedule\n"every weekday at 8am summarize open PRs"\n"once at 3pm today remind me to review the deploy"\n"list my scheduled tasks"'
-      },
-      {
-        cmd: '/loop', label: 'Loop', icon: 'ti-repeat',
-        brief: 'Run a command repeatedly on an interval',
-        desc: 'Executes a prompt or slash command on a recurring interval within the current session. Useful for polling status, babysitting long-running jobs, or keeping a dashboard refreshed.',
-        usecase: 'Poll a CI pipeline every 5 minutes and alert you when it turns red.',
-        trigger: '/loop 5m /check-ci\n/loop 10m "is the deploy done yet?"\n/loop (no interval — model self-paces)'
-      },
-      {
-        cmd: '/consolidate-memory', label: 'Consolidate memory', icon: 'ti-brain',
-        brief: 'Clean up and merge your persistent memory files',
-        desc: 'Does a reflective pass over all memory files — merges duplicates, fixes stale facts, prunes the index, and tightens descriptions so future recall is faster and more accurate.',
-        usecase: 'After a long project your memory has accumulated contradictions and old facts — this tidies it all up.',
-        trigger: '/consolidate-memory'
-      },
-      {
-        cmd: '/update-config', label: 'Update config', icon: 'ti-settings-2',
-        brief: 'Configure Claude Code hooks, permissions, and env vars',
-        desc: 'Edits settings.json to add hooks (automated behaviors that fire before/after tool calls), grant tool permissions, set environment variables, and wire up automated workflows.',
-        usecase: 'Set up a hook that automatically runs tests after every file edit.',
-        trigger: '/update-config\n"allow npm commands without prompting"\n"set DEBUG=true in env"\n"run eslint after every file save"'
-      },
-      {
-        cmd: '/keybindings-help', label: 'Keybindings', icon: 'ti-keyboard',
-        brief: 'Customize keyboard shortcuts in Claude Code',
-        desc: 'Edits ~/.claude/keybindings.json to remap keys, add chord bindings, and change the submit key. Walk-through for any shortcut customization.',
-        usecase: 'You want Ctrl+Enter to submit instead of Enter, and a chord shortcut for /code-review.',
-        trigger: '/keybindings-help\n"rebind the submit key to ctrl+enter"\n"add a chord shortcut for /code-review"\n"show my current keybindings"'
-      },
-      {
-        cmd: '/fewer-permission-prompts', label: 'Fewer prompts', icon: 'ti-shield-check',
-        brief: 'Reduce repetitive tool permission pop-ups',
-        desc: 'Scans your session transcripts for commonly approved read-only tool calls and adds a prioritized allowlist to .claude/settings.json so those tools run without prompting in future.',
-        usecase: 'You keep approving the same Bash read commands — this makes them auto-approve from now on.',
-        trigger: '/fewer-permission-prompts'
-      },
-      {
-        cmd: '/statusline-setup', label: 'Status line', icon: 'ti-layout-bottombar',
-        brief: 'Configure the Claude Code status line display',
-        desc: 'Guides you through setting up and customising the status bar that appears in the Claude Code terminal — what information is shown and how it is formatted.',
-        usecase: 'You want the status line to show current model and token usage at a glance.',
-        trigger: '/statusline-setup'
-      }
-    ]
-  },
-  code: {
-    label: 'Code commands',
-    iconClass: 'ti-terminal-2',
-    bgVar: 'var(--code-bg)', colorVar: 'var(--code-color)', textVar: 'var(--code-text)',
-    commands: [
-      {
-        cmd: '/code-review', label: 'Code review', icon: 'ti-code',
-        brief: 'Review the current diff for bugs and cleanup opportunities',
-        desc: 'Analyses the current branch diff at a configurable effort level (low / medium / high / ultra). Finds correctness bugs, reuse opportunities, simplification wins, and efficiency improvements. Can post findings as inline PR comments with --comment, or auto-apply fixes with --fix. Ultra mode launches a deep multi-agent cloud review.',
-        usecase: 'Before opening a PR, catch bugs and inefficiencies in everything you have changed on the branch.',
-        trigger: '/code-review\n/code-review high\n/code-review --comment\n/code-review --fix\n/code-review ultra\n/code-review ultra <PR#>'
-      },
-      {
-        cmd: '/simplify', label: 'Simplify', icon: 'ti-artboard',
-        brief: 'Reduce complexity and apply cleanup to changed code',
-        desc: 'Reviews changed code specifically for reuse, simplification, efficiency, and altitude improvements — then applies the fixes directly. Quality-focused only; it does not hunt for bugs (use /code-review for that).',
-        usecase: 'You wrote a working feature but the implementation feels verbose — simplify cleans it up without changing behaviour.',
-        trigger: '/simplify'
-      },
-      {
-        cmd: '/verify', label: 'Verify', icon: 'ti-circle-check',
-        brief: 'Run the app and confirm a change actually works',
-        desc: 'Starts the project app, exercises the golden path for the changed feature, checks edge cases, and watches for regressions. Goes beyond type-checking — it observes real runtime behaviour.',
-        usecase: 'You fixed a form validation bug and want to confirm the fix works in the live app, not just in tests.',
-        trigger: '/verify\n"verify the login flow still works after my auth changes"'
-      },
-      {
-        cmd: '/run', label: 'Run', icon: 'ti-player-play',
-        brief: 'Launch the project app and observe it running',
-        desc: 'Detects the project type (CLI, server, Electron, browser-driven, etc.) and launches it using the correct pattern. Falls back to built-in heuristics if no project-specific launch skill exists.',
-        usecase: 'Start a Node server mid-session to test an endpoint you just added.',
-        trigger: '/run\n"run the app and screenshot the home page"'
-      },
-      {
-        cmd: '/init', label: 'Init', icon: 'ti-file-plus',
-        brief: 'Generate a CLAUDE.md for a new codebase',
-        desc: 'Explores the project structure and creates a CLAUDE.md file documenting architecture, conventions, key files, and how to run the project. Gives future Claude sessions instant codebase context.',
-        usecase: 'You cloned a new repo and want Claude to understand it quickly without re-exploring every session.',
-        trigger: '/init'
-      },
-      {
-        cmd: '/review', label: 'Review PR', icon: 'ti-git-pull-request',
-        brief: 'Review a pull request end to end',
-        desc: 'Fetches a pull request, reads all changed files in context, and produces a structured review covering correctness, design, test coverage, and anything that should block merge.',
-        usecase: 'A colleague opened a PR and you want a thorough second opinion before approving.',
-        trigger: '/review\n/review 42\n"review the open PR from @teammate"'
-      },
-      {
-        cmd: '/security-review', label: 'Security review', icon: 'ti-shield-lock',
-        brief: 'Audit pending changes for security vulnerabilities',
-        desc: 'Runs a focused security audit on the current branch diff — checks for OWASP Top 10 issues, injection vectors, auth weaknesses, secret leaks, and insecure defaults. Produces a prioritised finding list.',
-        usecase: 'Before merging a feature that touches authentication, get a security audit of everything that changed.',
-        trigger: '/security-review'
-      }
-    ]
-  }
+const THEMES=[
+  {id:'original',       name:'ORIGINAL'},
+  {id:'original-green', name:'ORIGINAL GREEN'},
+  {id:'desert-warmth',  name:'DESERT WARMTH'},
+  {id:'cloud-neutral',  name:'CLOUD NEUTRAL'},
+  {id:'qatar',          name:'QATAR'}
+];
+const SWATCH_COLORS={
+  'original':'#E07B00','original-green':'#8BB836','desert-warmth':'#8B5E3C',
+  'cloud-neutral':'#1E4CA1','qatar':'#8A1538'
 };
+const root=document.documentElement;
+const grid=document.getElementById('swatches');
+const nameEl=document.getElementById('themeName');
 
-let selectedMode = null;
-let selectedCmd = null;
-let selectedL2Card = null;
-
-function selectMode(mode) {
-  selectedCmd = null;
-  selectedL2Card = null;
-
-  document.querySelectorAll('.l1-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('l1-' + mode).classList.add('selected');
-
-  const m = data[mode];
-  selectedMode = mode;
-
-  const l2 = document.getElementById('l2-section');
-  document.getElementById('l2-title').textContent = m.label;
-
-  const grid = document.getElementById('l2-grid');
-  grid.innerHTML = '';
-  m.commands.forEach(cmd => {
-    const card = document.createElement('div');
-    card.className = 'l2-card';
-    card.setAttribute('data-cmd', cmd.cmd);
-    card.innerHTML = `
-      <div class="l2-card-top">
-        <div class="l2-icon" style="background:${m.bgVar};color:${m.colorVar}">
-          <i class="ti ${cmd.icon}" aria-hidden="true"></i>
-        </div>
-        <div>
-          <div class="l2-label">${cmd.label}</div>
-          <div class="l2-cmd">${cmd.cmd}</div>
-        </div>
-      </div>
-      <div class="l2-brief">${cmd.brief}</div>
-    `;
-    card.onclick = () => selectCmd(cmd, card, m);
-    grid.appendChild(card);
-  });
-
-  l2.classList.add('show');
-  document.getElementById('l3-section').classList.remove('show');
-
-  updateBreadcrumb(m.label, null);
-  l2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function apply(id){
+  root.setAttribute('data-theme',id);
+  nameEl.textContent=(THEMES.find(t=>t.id===id)||THEMES[0]).name;
+  [...grid.children].forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  try{localStorage.setItem('zeentech-theme',id);}catch(e){}
 }
 
-function selectCmd(cmd, cardEl, m) {
-  if (selectedL2Card) selectedL2Card.classList.remove('selected');
-  selectedL2Card = cardEl;
-  cardEl.classList.add('selected');
-  selectedCmd = cmd;
+THEMES.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='swatch'; b.dataset.id=t.id; b.title=t.name;
+  b.style.setProperty('--sw',SWATCH_COLORS[t.id]);
+  b.setAttribute('aria-label',t.name);
+  b.onclick=()=>apply(t.id);
+  grid.appendChild(b);
+});
 
-  const l3 = document.getElementById('l3-section');
-  const card = document.getElementById('l3-card');
-
-  card.innerHTML = `
-    <div class="l3-top">
-      <div class="l3-icon" style="background:${m.bgVar};color:${m.colorVar}">
-        <i class="ti ${cmd.icon}" aria-hidden="true"></i>
-      </div>
-      <div class="l3-meta">
-        <div class="l3-cmd">${cmd.cmd}</div>
-        <div class="l3-title">${cmd.label}</div>
-        <span class="l3-cat-badge" style="background:${m.bgVar};color:${m.textVar}">${m.label.replace(' commands','')}</span>
-      </div>
-    </div>
-    <div class="l3-divider"></div>
-    <div class="l3-section-label">What it does</div>
-    <div class="l3-body">${cmd.desc}</div>
-    <div class="l3-section-label">Sample use case</div>
-    <div class="l3-usecase-box">
-      <div class="l3-usecase-text">${cmd.usecase}</div>
-    </div>
-    <div class="l3-section-label">How to invoke</div>
-    <div class="l3-trigger-box">
-      <div class="l3-trigger-text">${cmd.trigger.replace(/\n/g,'<br>')}</div>
-    </div>
-    <button class="close-btn" onclick="closeDetail()"><i class="ti ti-x" style="font-size:13px;vertical-align:-1px;margin-right:5px" aria-hidden="true"></i>Close</button>
-  `;
-
-  l3.classList.add('show');
-  updateBreadcrumb(m.label, cmd.label);
-  l3.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function closeDetail() {
-  document.getElementById('l3-section').classList.remove('show');
-  if (selectedL2Card) selectedL2Card.classList.remove('selected');
-  selectedL2Card = null;
-  selectedCmd = null;
-  const m = data[selectedMode];
-  updateBreadcrumb(m.label, null);
-}
-
-function updateBreadcrumb(modeName, cmdName) {
-  const bc = document.getElementById('breadcrumb');
-  if (!modeName) {
-    bc.innerHTML = '<span>Claude</span>';
-    return;
-  }
-  let html = '<span>Claude</span><span class="sep">›</span>';
-  if (!cmdName) {
-    html += `<span class="active">${modeName}</span>`;
-  } else {
-    html += `<span style="cursor:pointer;color:var(--text-secondary)" onclick="closeDetail()">${modeName}</span>`;
-    html += '<span class="sep">›</span>';
-    html += `<span class="active">${cmdName}</span>`;
-  }
-  bc.innerHTML = html;
-}
+const hour=new Date().getHours();
+const timeDefault=hour>=6&&hour<18?'qatar':'original';
+let saved=timeDefault;
+try{const s=localStorage.getItem('zeentech-theme');if(s)saved=s;}catch(e){}
+apply(THEMES.find(t=>t.id===saved)?saved:timeDefault);
 </script>
 </body>
 </html>
