@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Command Reference</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f6f3;
+    --bg-tertiary: #f0efe9;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6a65;
+    --text-tertiary: #9b9a95;
+    --border-light: rgba(0,0,0,0.1);
+    --border-mid: rgba(0,0,0,0.18);
+    --border-strong: rgba(0,0,0,0.28);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --chat-bg: #E6F1FB; --chat-bg-d: #0C447C; --chat-color: #185FA5; --chat-text: #042C53;
+    --cowork-bg: #EEEDFE; --cowork-bg-d: #3C3489; --cowork-color: #534AB7; --cowork-text: #26215C;
+    --code-bg: #E1F5EE; --code-bg-d: #085041; --code-color: #0F6E56; --code-text: #04342C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1e1e1c;
+      --bg-secondary: #252523;
+      --bg-tertiary: #2c2c2a;
+      --text-primary: #f0efe9;
+      --text-secondary: #a0a09a;
+      --text-tertiary: #6b6a65;
+      --border-light: rgba(255,255,255,0.08);
+      --border-mid: rgba(255,255,255,0.14);
+      --border-strong: rgba(255,255,255,0.22);
+      --chat-bg: #0C447C; --chat-color: #85B7EB; --chat-text: #B5D4F4;
+      --cowork-bg: #3C3489; --cowork-color: #AFA9EC; --cowork-text: #CECBF6;
+      --code-bg: #085041; --code-color: #5DCAA5; --code-text: #9FE1CB;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .page-header { max-width: 860px; margin: 0 auto 2.5rem; }
+  .page-title { font-size: 26px; font-weight: 500; margin-bottom: 6px; }
+  .page-sub { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+  .breadcrumb { font-size: 13px; color: var(--text-tertiary); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; min-height: 20px; }
+  .breadcrumb span { color: var(--text-secondary); }
+  .breadcrumb .sep { color: var(--text-tertiary); }
+  .breadcrumb .active { color: var(--text-primary); font-weight: 500; }
+
+  /* Layer 1 */
+  .l1-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 860px; margin: 0 auto 2rem; }
+  .l1-card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.12s;
+    position: relative;
+    overflow: hidden;
+  }
+  .l1-card:hover { border-color: var(--border-mid); transform: translateY(-2px); }
+  .l1-card.selected { border: 2px solid var(--border-strong); }
+  .l1-icon {
+    width: 48px; height: 48px; border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 1rem;
+  }
+  .l1-name { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .l1-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem; }
+  .l1-count {
+    display: inline-block; font-size: 12px; padding: 3px 10px;
+    border-radius: 99px; font-weight: 500;
+  }
+  .l1-arrow {
+    position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%);
+    font-size: 18px; color: var(--text-tertiary); transition: color 0.15s, right 0.15s;
+  }
+  .l1-card:hover .l1-arrow { color: var(--text-secondary); right: 1rem; }
+  .l1-card.selected .l1-arrow { color: var(--text-primary); }
+
+  /* Layer 2 */
+  .l2-section { max-width: 860px; margin: 0 auto 1rem; display: none; }
+  .l2-section.show { display: block; }
+  .l2-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+  .l2-title { font-size: 16px; font-weight: 500; }
+  .l2-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; }
+  .l2-card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .l2-card:hover { border-color: var(--border-mid); }
+  .l2-card.selected { border: 1.5px solid var(--border-strong); }
+  .l2-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .l2-icon {
+    width: 30px; height: 30px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .l2-cmd { font-size: 11px; font-family: monospace; color: var(--text-secondary); }
+  .l2-label { font-size: 14px; font-weight: 500; }
+  .l2-brief { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+
+  /* Layer 3 */
+  .l3-section { max-width: 860px; margin: 0 auto; display: none; }
+  .l3-section.show { display: block; }
+  .l3-card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 2rem;
+    animation: slideIn 0.18s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .l3-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.25rem; }
+  .l3-icon {
+    width: 52px; height: 52px; border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .l3-meta { flex: 1; }
+  .l3-cmd { font-family: monospace; font-size: 13px; color: var(--text-secondary); margin-bottom: 3px; }
+  .l3-title { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .l3-cat-badge { font-size: 12px; padding: 3px 10px; border-radius: 99px; display: inline-block; }
+  .l3-divider { height: 0.5px; background: var(--border-light); margin: 1.25rem 0; }
+  .l3-section-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: 8px; }
+  .l3-body { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
+  .l3-usecase-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .l3-usecase-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .l3-trigger-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+  .l3-trigger-text { font-size: 13px; font-family: monospace; color: var(--text-primary); line-height: 1.7; }
+  .close-btn {
+    margin-top: 1.5rem;
+    padding: 7px 18px;
+    border: 0.5px solid var(--border-mid);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .close-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+  @media (max-width: 600px) {
+    .l1-grid { grid-template-columns: 1fr; }
+    .l1-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="breadcrumb" id="breadcrumb">
+    <span>Claude</span>
+  </div>
+  <h1 class="page-title">Claude command reference</h1>
+  <p class="page-sub">Three layers of commands — choose a surface, then a command, to see what it does and how to invoke it.</p>
+</div>
+
+<!-- Layer 1 -->
+<div class="l1-grid" id="l1-grid">
+  <div class="l1-card" onclick="selectMode('chat')" id="l1-chat">
+    <div class="l1-icon" style="background:var(--chat-bg);color:var(--chat-color)"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
+    <div class="l1-name">Chat</div>
+    <div class="l1-desc">Document and file skills you can invoke in any Claude conversation.</div>
+    <div class="l1-count" style="background:var(--chat-bg);color:var(--chat-text)">5 commands</div>
+    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
+  </div>
+  <div class="l1-card" onclick="selectMode('cowork')" id="l1-cowork">
+    <div class="l1-icon" style="background:var(--cowork-bg);color:var(--cowork-color)"><i class="ti ti-users" aria-hidden="true"></i></div>
+    <div class="l1-name">Cowork</div>
+    <div class="l1-desc">Setup, automation, and configuration skills for your Claude environment.</div>
+    <div class="l1-count" style="background:var(--cowork-bg);color:var(--cowork-text)">9 commands</div>
+    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
+  </div>
+  <div class="l1-card" onclick="selectMode('code')" id="l1-code">
+    <div class="l1-icon" style="background:var(--code-bg);color:var(--code-color)"><i class="ti ti-terminal-2" aria-hidden="true"></i></div>
+    <div class="l1-name">Code</div>
+    <div class="l1-desc">Engineering skills for reviewing, running, and hardening your codebase.</div>
+    <div class="l1-count" style="background:var(--code-bg);color:var(--code-text)">7 commands</div>
+    <i class="ti ti-chevron-right l1-arrow" aria-hidden="true"></i>
+  </div>
+</div>
+
+<!-- Layer 2 -->
+<div class="l2-section" id="l2-section">
+  <div class="l2-header">
+    <i class="ti ti-arrow-down" style="font-size:16px;color:var(--text-tertiary)" aria-hidden="true"></i>
+    <span class="l2-title" id="l2-title"></span>
+  </div>
+  <div class="l2-grid" id="l2-grid"></div>
+</div>
+
+<!-- Layer 3 -->
+<div class="l3-section" id="l3-section">
+  <div class="l2-header" style="margin-top:1.5rem">
+    <i class="ti ti-arrow-down" style="font-size:16px;color:var(--text-tertiary)" aria-hidden="true"></i>
+    <span class="l2-title">Command detail</span>
+  </div>
+  <div class="l3-card" id="l3-card"></div>
+</div>
+
+<script>
+const data = {
+  chat: {
+    label: 'Chat commands',
+    iconClass: 'ti-message-circle',
+    bgVar: 'var(--chat-bg)', colorVar: 'var(--chat-color)', textVar: 'var(--chat-text)',
+    commands: [
+      {
+        cmd: '/pdf', label: 'PDF', icon: 'ti-file-type-pdf',
+        brief: 'Read, merge, split, and create PDF files',
+        desc: 'Handles anything PDF — extract text, combine multiple files into one, split pages apart, add watermarks, fill forms, rotate pages, and OCR scanned documents to make them searchable.',
+        usecase: 'You have a scanned 40-page contract and need the text extracted so you can search and quote from it.',
+        trigger: '/pdf\n"merge these three PDFs into one"\n"extract the table from page 5"\n"make this scanned PDF searchable"'
+      },
+      {
+        cmd: '/docx', label: 'Word doc', icon: 'ti-file-word',
+        brief: 'Create and edit Word documents with rich formatting',
+        desc: 'Generates and edits .docx files with headings, tables of contents, page numbers, letterheads, tracked changes, and comments. Also extracts or reorganizes content from existing Word files.',
+        usecase: 'You need a polished memo with a table of contents and consistent heading styles delivered as a .docx.',
+        trigger: '/docx\n"write a client proposal as a Word doc"\n"add a table of contents to this document"\n"extract all the tables from this .docx"'
+      },
+      {
+        cmd: '/pptx', label: 'Slides', icon: 'ti-presentation',
+        brief: 'Build, edit, and parse PowerPoint presentations',
+        desc: 'Creates slide decks from scratch, reads and parses existing .pptx files, edits layouts and speaker notes, combines or splits presentations, and works with templates.',
+        usecase: 'Turn a bullet-point outline into a 12-slide deck with consistent layout and speaker notes.',
+        trigger: '/pptx\n"create a 10-slide pitch deck from this brief"\n"extract all the text from this presentation"\n"add speaker notes to every slide"'
+      },
+      {
+        cmd: '/xlsx', label: 'Spreadsheet', icon: 'ti-table',
+        brief: 'Create and manipulate Excel spreadsheets',
+        desc: 'Builds and edits .xlsx files — formulas, pivot tables, charts, conditional formatting, data validation, and multi-sheet workbooks. Also reads and transforms data from existing spreadsheets.',
+        usecase: 'Generate a project budget tracker with formulas, colour-coded status columns, and a summary pivot table.',
+        trigger: '/xlsx\n"build a budget tracker spreadsheet"\n"add a pivot table to this data"\n"read the values from column C"'
+      },
+      {
+        cmd: '/claude-api', label: 'Claude API', icon: 'ti-api',
+        brief: 'Up-to-date reference for the Anthropic API and SDK',
+        desc: 'Authoritative reference for model IDs, pricing, parameters, streaming, tool use, MCP, multi-agent patterns, prompt caching, and token counting. Always fetches live data — never answers from stale training memory.',
+        usecase: 'You are choosing between Sonnet and Haiku for a high-volume use case and need current pricing and context window specs.',
+        trigger: '/claude-api\n"what is the context window for claude-sonnet-4-6?"\n"how do I stream tool use responses?"\n"show me a multi-agent example with MCP"'
+      }
+    ]
+  },
+  cowork: {
+    label: 'Cowork commands',
+    iconClass: 'ti-users',
+    bgVar: 'var(--cowork-bg)', colorVar: 'var(--cowork-color)', textVar: 'var(--cowork-text)',
+    commands: [
+      {
+        cmd: '/setup-cowork', label: 'Setup Cowork', icon: 'ti-plug',
+        brief: 'Guided setup for plugins, tools, and first skill',
+        desc: 'Walks you through the Cowork onboarding flow — installs role-matched plugins, connects your tools (calendar, Slack, email), and helps you try your first skill. Best starting point for a new environment.',
+        usecase: 'You just installed Claude Code and want to connect your work tools in one guided session.',
+        trigger: '/setup-cowork'
+      },
+      {
+        cmd: '/skill-creator', label: 'Skill creator', icon: 'ti-wand',
+        brief: 'Create, edit, test, and benchmark custom skills',
+        desc: 'Builds new skills from scratch, modifies existing ones, runs evals to test correctness, benchmarks performance with variance analysis, and optimizes skill descriptions so they trigger reliably.',
+        usecase: 'You want a /daily-standup skill that drafts your standup message from your git commits.',
+        trigger: '/skill-creator\n"create a skill that summarizes my git log as a standup"\n"improve the trigger description for my existing skill"\n"run evals on /my-skill"'
+      },
+      {
+        cmd: '/schedule', label: 'Schedule', icon: 'ti-calendar-event',
+        brief: 'Create and manage scheduled cloud agents',
+        desc: 'Schedules recurring cloud agents on a cron expression or natural language interval. Also handles one-time future runs. You can list, update, and delete scheduled routines.',
+        usecase: 'Run a PR digest every weekday at 8am and send a summary to Slack.',
+        trigger: '/schedule\n"every weekday at 8am summarize open PRs"\n"once at 3pm today remind me to review the deploy"\n"list my scheduled tasks"'
+      },
+      {
+        cmd: '/loop', label: 'Loop', icon: 'ti-repeat',
+        brief: 'Run a command repeatedly on an interval',
+        desc: 'Executes a prompt or slash command on a recurring interval within the current session. Useful for polling status, babysitting long-running jobs, or keeping a dashboard refreshed.',
+        usecase: 'Poll a CI pipeline every 5 minutes and alert you when it turns red.',
+        trigger: '/loop 5m /check-ci\n/loop 10m "is the deploy done yet?"\n/loop (no interval — model self-paces)'
+      },
+      {
+        cmd: '/consolidate-memory', label: 'Consolidate memory', icon: 'ti-brain',
+        brief: 'Clean up and merge your persistent memory files',
+        desc: 'Does a reflective pass over all memory files — merges duplicates, fixes stale facts, prunes the index, and tightens descriptions so future recall is faster and more accurate.',
+        usecase: 'After a long project your memory has accumulated contradictions and old facts — this tidies it all up.',
+        trigger: '/consolidate-memory'
+      },
+      {
+        cmd: '/update-config', label: 'Update config', icon: 'ti-settings-2',
+        brief: 'Configure Claude Code hooks, permissions, and env vars',
+        desc: 'Edits settings.json to add hooks (automated behaviors that fire before/after tool calls), grant tool permissions, set environment variables, and wire up automated workflows.',
+        usecase: 'Set up a hook that automatically runs tests after every file edit.',
+        trigger: '/update-config\n"allow npm commands without prompting"\n"set DEBUG=true in env"\n"run eslint after every file save"'
+      },
+      {
+        cmd: '/keybindings-help', label: 'Keybindings', icon: 'ti-keyboard',
+        brief: 'Customize keyboard shortcuts in Claude Code',
+        desc: 'Edits ~/.claude/keybindings.json to remap keys, add chord bindings, and change the submit key. Walk-through for any shortcut customization.',
+        usecase: 'You want Ctrl+Enter to submit instead of Enter, and a chord shortcut for /code-review.',
+        trigger: '/keybindings-help\n"rebind the submit key to ctrl+enter"\n"add a chord shortcut for /code-review"\n"show my current keybindings"'
+      },
+      {
+        cmd: '/fewer-permission-prompts', label: 'Fewer prompts', icon: 'ti-shield-check',
+        brief: 'Reduce repetitive tool permission pop-ups',
+        desc: 'Scans your session transcripts for commonly approved read-only tool calls and adds a prioritized allowlist to .claude/settings.json so those tools run without prompting in future.',
+        usecase: 'You keep approving the same Bash read commands — this makes them auto-approve from now on.',
+        trigger: '/fewer-permission-prompts'
+      },
+      {
+        cmd: '/statusline-setup', label: 'Status line', icon: 'ti-layout-bottombar',
+        brief: 'Configure the Claude Code status line display',
+        desc: 'Guides you through setting up and customising the status bar that appears in the Claude Code terminal — what information is shown and how it is formatted.',
+        usecase: 'You want the status line to show current model and token usage at a glance.',
+        trigger: '/statusline-setup'
+      }
+    ]
+  },
+  code: {
+    label: 'Code commands',
+    iconClass: 'ti-terminal-2',
+    bgVar: 'var(--code-bg)', colorVar: 'var(--code-color)', textVar: 'var(--code-text)',
+    commands: [
+      {
+        cmd: '/code-review', label: 'Code review', icon: 'ti-code',
+        brief: 'Review the current diff for bugs and cleanup opportunities',
+        desc: 'Analyses the current branch diff at a configurable effort level (low / medium / high / ultra). Finds correctness bugs, reuse opportunities, simplification wins, and efficiency improvements. Can post findings as inline PR comments with --comment, or auto-apply fixes with --fix. Ultra mode launches a deep multi-agent cloud review.',
+        usecase: 'Before opening a PR, catch bugs and inefficiencies in everything you have changed on the branch.',
+        trigger: '/code-review\n/code-review high\n/code-review --comment\n/code-review --fix\n/code-review ultra\n/code-review ultra <PR#>'
+      },
+      {
+        cmd: '/simplify', label: 'Simplify', icon: 'ti-artboard',
+        brief: 'Reduce complexity and apply cleanup to changed code',
+        desc: 'Reviews changed code specifically for reuse, simplification, efficiency, and altitude improvements — then applies the fixes directly. Quality-focused only; it does not hunt for bugs (use /code-review for that).',
+        usecase: 'You wrote a working feature but the implementation feels verbose — simplify cleans it up without changing behaviour.',
+        trigger: '/simplify'
+      },
+      {
+        cmd: '/verify', label: 'Verify', icon: 'ti-circle-check',
+        brief: 'Run the app and confirm a change actually works',
+        desc: 'Starts the project app, exercises the golden path for the changed feature, checks edge cases, and watches for regressions. Goes beyond type-checking — it observes real runtime behaviour.',
+        usecase: 'You fixed a form validation bug and want to confirm the fix works in the live app, not just in tests.',
+        trigger: '/verify\n"verify the login flow still works after my auth changes"'
+      },
+      {
+        cmd: '/run', label: 'Run', icon: 'ti-player-play',
+        brief: 'Launch the project app and observe it running',
+        desc: 'Detects the project type (CLI, server, Electron, browser-driven, etc.) and launches it using the correct pattern. Falls back to built-in heuristics if no project-specific launch skill exists.',
+        usecase: 'Start a Node server mid-session to test an endpoint you just added.',
+        trigger: '/run\n"run the app and screenshot the home page"'
+      },
+      {
+        cmd: '/init', label: 'Init', icon: 'ti-file-plus',
+        brief: 'Generate a CLAUDE.md for a new codebase',
+        desc: 'Explores the project structure and creates a CLAUDE.md file documenting architecture, conventions, key files, and how to run the project. Gives future Claude sessions instant codebase context.',
+        usecase: 'You cloned a new repo and want Claude to understand it quickly without re-exploring every session.',
+        trigger: '/init'
+      },
+      {
+        cmd: '/review', label: 'Review PR', icon: 'ti-git-pull-request',
+        brief: 'Review a pull request end to end',
+        desc: 'Fetches a pull request, reads all changed files in context, and produces a structured review covering correctness, design, test coverage, and anything that should block merge.',
+        usecase: 'A colleague opened a PR and you want a thorough second opinion before approving.',
+        trigger: '/review\n/review 42\n"review the open PR from @teammate"'
+      },
+      {
+        cmd: '/security-review', label: 'Security review', icon: 'ti-shield-lock',
+        brief: 'Audit pending changes for security vulnerabilities',
+        desc: 'Runs a focused security audit on the current branch diff — checks for OWASP Top 10 issues, injection vectors, auth weaknesses, secret leaks, and insecure defaults. Produces a prioritised finding list.',
+        usecase: 'Before merging a feature that touches authentication, get a security audit of everything that changed.',
+        trigger: '/security-review'
+      }
+    ]
+  }
+};
+
+let selectedMode = null;
+let selectedCmd = null;
+let selectedL2Card = null;
+
+function selectMode(mode) {
+  selectedCmd = null;
+  selectedL2Card = null;
+
+  document.querySelectorAll('.l1-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('l1-' + mode).classList.add('selected');
+
+  const m = data[mode];
+  selectedMode = mode;
+
+  const l2 = document.getElementById('l2-section');
+  document.getElementById('l2-title').textContent = m.label;
+
+  const grid = document.getElementById('l2-grid');
+  grid.innerHTML = '';
+  m.commands.forEach(cmd => {
+    const card = document.createElement('div');
+    card.className = 'l2-card';
+    card.setAttribute('data-cmd', cmd.cmd);
+    card.innerHTML = `
+      <div class="l2-card-top">
+        <div class="l2-icon" style="background:${m.bgVar};color:${m.colorVar}">
+          <i class="ti ${cmd.icon}" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div class="l2-label">${cmd.label}</div>
+          <div class="l2-cmd">${cmd.cmd}</div>
+        </div>
+      </div>
+      <div class="l2-brief">${cmd.brief}</div>
+    `;
+    card.onclick = () => selectCmd(cmd, card, m);
+    grid.appendChild(card);
+  });
+
+  l2.classList.add('show');
+  document.getElementById('l3-section').classList.remove('show');
+
+  updateBreadcrumb(m.label, null);
+  l2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function selectCmd(cmd, cardEl, m) {
+  if (selectedL2Card) selectedL2Card.classList.remove('selected');
+  selectedL2Card = cardEl;
+  cardEl.classList.add('selected');
+  selectedCmd = cmd;
+
+  const l3 = document.getElementById('l3-section');
+  const card = document.getElementById('l3-card');
+
+  card.innerHTML = `
+    <div class="l3-top">
+      <div class="l3-icon" style="background:${m.bgVar};color:${m.colorVar}">
+        <i class="ti ${cmd.icon}" aria-hidden="true"></i>
+      </div>
+      <div class="l3-meta">
+        <div class="l3-cmd">${cmd.cmd}</div>
+        <div class="l3-title">${cmd.label}</div>
+        <span class="l3-cat-badge" style="background:${m.bgVar};color:${m.textVar}">${m.label.replace(' commands','')}</span>
+      </div>
+    </div>
+    <div class="l3-divider"></div>
+    <div class="l3-section-label">What it does</div>
+    <div class="l3-body">${cmd.desc}</div>
+    <div class="l3-section-label">Sample use case</div>
+    <div class="l3-usecase-box">
+      <div class="l3-usecase-text">${cmd.usecase}</div>
+    </div>
+    <div class="l3-section-label">How to invoke</div>
+    <div class="l3-trigger-box">
+      <div class="l3-trigger-text">${cmd.trigger.replace(/\n/g,'<br>')}</div>
+    </div>
+    <button class="close-btn" onclick="closeDetail()"><i class="ti ti-x" style="font-size:13px;vertical-align:-1px;margin-right:5px" aria-hidden="true"></i>Close</button>
+  `;
+
+  l3.classList.add('show');
+  updateBreadcrumb(m.label, cmd.label);
+  l3.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeDetail() {
+  document.getElementById('l3-section').classList.remove('show');
+  if (selectedL2Card) selectedL2Card.classList.remove('selected');
+  selectedL2Card = null;
+  selectedCmd = null;
+  const m = data[selectedMode];
+  updateBreadcrumb(m.label, null);
+}
+
+function updateBreadcrumb(modeName, cmdName) {
+  const bc = document.getElementById('breadcrumb');
+  if (!modeName) {
+    bc.innerHTML = '<span>Claude</span>';
+    return;
+  }
+  let html = '<span>Claude</span><span class="sep">›</span>';
+  if (!cmdName) {
+    html += `<span class="active">${modeName}</span>`;
+  } else {
+    html += `<span style="cursor:pointer;color:var(--text-secondary)" onclick="closeDetail()">${modeName}</span>`;
+    html += '<span class="sep">›</span>';
+    html += `<span class="active">${cmdName}</span>`;
+  }
+  bc.innerHTML = html;
+}
+</script>
+</body>
+</html>
